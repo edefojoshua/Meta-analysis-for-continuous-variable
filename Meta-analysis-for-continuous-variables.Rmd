@@ -1,0 +1,59 @@
+---
+title: "Meta analysis"
+author: "Joshua Edefo"
+email: "edefojoshu2000@yahoo.com"
+date: "2024-01-16"
+output: github_document
+---
+Libraries
+```{r a, message=FALSE}
+library(meta)
+library(readxl)
+library(mice)
+```
+
+## R Markdown
+
+Upload data and data cleansing
+```{r b}
+metasamples <- read_excel("C:/Users/joe62/OneDrive - Aberystwyth University/Apps/Desktop/metasamples.xlsx")
+View(metasamples)
+head(metasamples)
+str(metasamples)
+md.pattern(metasamples)
+# in case of deleting observation with NA
+metasamples<-(na.omit(metasamples))
+```
+
+## Including Plots
+
+Analysis
+
+```{r c}
+
+head(metasamples)
+metademo<-metacont(nvtest, mean.vtest, sd.vtest, nvcontrol, meanvcontrol, sdvcontrol, 
+                   fixed = T, random= T, studlab = Author , data = metasamples, sm = "SMD")
+metademo
+
+```
+
+Plots and its interpretations
+```{r d}
+# plot forest plot
+forest(metademo,leftcols = c("studlab"))
+# heterogeneity <50% use common effect model, > 50% use Random effect model
+# here the heterogeneity is observed 975 hence random effect model will be followed, from the forest plot, interpretation can be made that 
+#intervention shows a 1.34 degrees reduction in VAS scores compared to control group. 
+#However as the effect size is crossing the line of no difference, the results are statistically non-signficant
+
+ # funnel plot
+funnel(metademo)
+
+
+```
+Session informatiom
+```{r e, message=FALSE}
+
+sessionInfo()
+```
